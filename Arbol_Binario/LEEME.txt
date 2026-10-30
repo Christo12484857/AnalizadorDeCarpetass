@@ -1,0 +1,79 @@
+ARBOL_BINARIO - ÁRBOL BINARIO DE BÚSQUEDA CON JAVAFX
+
+Proyecto académico con Java 21, JavaFX 21.0.6 y Maven.
+El proyecto antes se llamaba PruebaJavaFX.
+
+CÓMO ABRIRLO Y EJECUTARLO EN INTELLIJ IDEA
+1. Usa File > Open y selecciona la carpeta Arbol_Binario o su pom.xml.
+   Si tenías abierto PruebaJavaFX, abre el proyecto desde su nueva ubicación.
+2. Selecciona JDK 21 en File > Project Structure > Project > SDK.
+3. Espera a que Maven cargue el proyecto. Si es necesario, pulsa Reload All
+   Maven Projects en el panel Maven.
+4. Abre src/main/java/episs/arbolbinario/Main.java.
+5. Pulsa el triángulo verde junto a main y elige Run 'Main.main()'.
+   También se incluye la configuración de ejecución "Main - Arbol_Binario".
+
+Alternativa: panel Maven > Arbol_Binario > Plugins > javafx > javafx:run.
+En una terminal dentro de Arbol_Binario, con JAVA_HOME apuntando al JDK 21:
+    .\mvnw.cmd javafx:run
+
+ORGANIZACIÓN PARA EXPLICAR EL PROGRAMA
+Los tres archivos están en src/main/java/episs/arbolbinario/:
+
+1. ArbolBinarioBusqueda.java: toda la lógica del árbol, sin JavaFX.
+   - Nodo es una clase pequeña anidada que guarda dato, izquierdo y derecho.
+   - raiz es la referencia al primer nodo; null significa árbol vacío.
+   - insertar: busca el espacio libre según el orden del número.
+   - buscar: compara y continúa únicamente por izquierda o derecha.
+   - eliminar: distingue una hoja, un nodo con un hijo y uno con dos hijos.
+   - inorden, preorden y postorden: devuelven listas con los recorridos.
+   - contarNodos, altura, minimo, maximo y vaciar: operaciones auxiliares.
+   Los comentarios explican los casos base y cómo se enlazan los subárboles.
+
+2. Arbol_Binario.java: crea la interfaz gráfica y dibuja el árbol.
+   Valida el campo de texto, llama a la lógica y actualiza la pantalla.
+   Las funciones recursivas de dibujo solo calculan posiciones y líneas;
+   no insertan ni eliminan datos del árbol.
+   El estilo está en src/main/resources/episs/arbolbinario/arbol.css.
+
+3. Main.java: contiene main y llama a Application.launch para abrir JavaFX.
+   Este es el archivo que debes ejecutar con el triángulo verde.
+
+REGLA Y DECISIONES DEL PROGRAMA
+- Cada nodo tiene como máximo dos hijos.
+- Los valores menores están a la izquierda y los mayores a la derecha.
+- No se admiten repetidos. Se aceptan enteros positivos, negativos y cero.
+- Es un ABB normal: no se equilibra automáticamente.
+- La altura cuenta aristas: vacío = -1, raíz sola = 0. La GUI muestra un
+  guion cuando está vacío para no confundirlo con un árbol de altura cero.
+- Buscar, insertar y eliminar cuestan O(h), siendo h la altura. Si el árbol
+  queda equilibrado, h es O(log n); si queda inclinado, puede ser O(n).
+- Los recorridos, el conteo y el cálculo de altura visitan todos los nodos:
+  cuestan O(n). El dibujo también utiliza todos los nodos.
+
+DEMOSTRACIÓN SUGERIDA PARA LA EXPOSICIÓN
+1. Pulsa "Cargar ejemplo": inserta 50, 30, 70, 20, 40, 60 y 80.
+   Este botón reemplaza los datos actuales con el ejemplo.
+   La raíz es 50, hay 7 nodos y su altura es 2.
+2. Explica que 30 va a la izquierda de 50 y 70 a la derecha.
+3. Revisa los recorridos:
+   Inorden:   20, 30, 40, 50, 60, 70, 80.
+   Preorden:  50, 30, 20, 40, 70, 60, 80.
+   Postorden: 20, 40, 30, 60, 80, 70, 50.
+4. Busca 60: se resalta en verde. Busca 65: se avisa que no existe.
+5. Inserta 65: queda a la derecha de 60. Inserta 65 otra vez: se rechaza.
+6. Para explicar eliminación, vuelve a cargar el ejemplo antes de cada caso:
+   - Elimina 20: era una hoja.
+   - Elimina primero 20 y después 30: 30 queda con un solo hijo, 40.
+   - Elimina 30 directamente: tiene dos hijos; lo reemplaza su sucesor, 40.
+   - Elimina 50: también se puede reemplazar la raíz (por 60 en el ejemplo).
+7. Pulsa "Vaciar árbol" e inserta una nueva raíz.
+
+Los números grandes o un árbol muy alto se pueden ver desplazando el panel.
+Enter en el campo de texto equivale a pulsar Insertar.
+
+VERIFICACIÓN DE LA LÓGICA
+    .\mvnw.cmd test
+Las pruebas están en src/test/java/episs/arbolbinario/.
+Cubren recorridos, duplicados, negativos, extremos de int y los casos de
+eliminación. También comparan 500 operaciones con un conjunto ordenado.
